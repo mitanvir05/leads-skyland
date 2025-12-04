@@ -4,10 +4,10 @@ import emailjs from "@emailjs/browser";
 import {
   Send,
   Loader2,
-  CheckCircle,
+  CheckCircle2,
   Mail,
   User,
-  MessageSquare,
+  MessageSquare
 } from "lucide-react";
 
 export default function Contact() {
@@ -16,22 +16,16 @@ export default function Contact() {
   const [sourceUrl, setSourceUrl] = useState("");
   const form = useRef();
 
-
-  // Make sure these exist in your .env file
+  // Environment variables (Vite standard)
   const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE;
   const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE;
   const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC;
 
   useEffect(() => {
-    // Optional: Log warning if keys are missing (helps debugging)
-    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
-      console.warn("EmailJS environment variables are missing! Check your .env file.");
-    }
-
     if (typeof window !== "undefined") {
       setSourceUrl(window.location.href);
     }
-  }, [SERVICE_ID, TEMPLATE_ID, PUBLIC_KEY]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,138 +43,127 @@ export default function Contact() {
       setSuccess(true);
       e.target.reset();
 
-      // Restore hidden source_url if needed
+      // restore source_url after reset (so hidden input contains current page)
       setTimeout(() => {
         const input = document.querySelector('input[name="source_url"]');
         if (input) input.value = window.location.href;
       }, 50);
 
-      // Auto-hide success message after 8s
-      setTimeout(() => setSuccess(false), 8000);
+      setTimeout(() => setSuccess(false), 5000);
     } catch (error) {
       console.error("EmailJS Error:", error);
-      alert("Failed to send message. Please try again later.");
+      alert("Failed to send message. Please check your config or try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Animation Variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
-    <section id="contact" className="relative py-4 px-6 overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/5 rounded-full blur-3xl -z-10" />
+    <section id="contact" className="relative py-24 bg-slate-50 overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-50 rounded-full blur-3xl -z-10 opacity-50 translate-x-1/2 -translate-y-1/2" />
 
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900">
-            Get in touch
-          </h2>
-          <p className="mt-4 text-slate-600 text-lg max-w-xl mx-auto">
-            Have a project in mind or want to discuss a partnership?
-            Send us a message and we'll get back to you within 24 hours.
-          </p>
-        </motion.div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100"
-        >
-          <form ref={form} onSubmit={handleSubmit} className="space-y-6">
+      <div className="container mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          
+          {/* LEFT SIDE: Contact Info & Context */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="pt-8"
+          >
+            <span className="text-indigo-600 font-bold tracking-wider uppercase text-sm">Get in Touch</span>
             
-            {/* Hidden source_url field */}
-            <input type="hidden" name="source_url" value={sourceUrl} />
+            <h2 className="mt-3 text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+              Ready to start your <br />
+              <span className="text-indigo-600">next big project?</span>
+            </h2>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Name Input */}
-              <motion.div variants={itemVariants}>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Your Name
-                </label>
+            <p className="mt-6 text-lg text-slate-600 leading-relaxed">
+              Ready to start your next project? We're here to help you scope, design, and build scalable solutions.
+            </p>
+
+            {/* Direct Contact Details (EMAIL only) */}
+            <div className="mt-10 space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-white rounded-lg border border-slate-100 shadow-sm text-indigo-600">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-slate-900 font-bold">Email Us</h4>
+                  <p className="text-slate-600">info@skyland.com</p>
+                  <p className="text-slate-500 text-sm mt-1">Response time: &lt; 24 hours</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* RIGHT SIDE: The Form */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 relative"
+          >
+            <form ref={form} onSubmit={handleSubmit} className="space-y-5">
+              <input type="hidden" name="source_url" value={sourceUrl} />
+
+              {/* Name Field */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-slate-400">
-                    <User className="w-5 h-5" />
-                  </span>
+                  <User className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                   <input
                     type="text"
-                    name="name" // Matches {{name}} in your EmailJS template
+                    name="name"
                     required
                     placeholder="John Doe"
-                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-accent focus:ring-4 focus:ring-accent/10 transition-all outline-none"
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
                   />
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Email Input */}
-              <motion.div variants={itemVariants}>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Email Address
-                </label>
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-3.5 text-slate-400">
-                    <Mail className="w-5 h-5" />
-                  </span>
+                  <Mail className="absolute left-4 top-3.5 w-5 h-5 text-slate-400" />
                   <input
                     type="email"
-                    name="email" // Matches {{email}} in your EmailJS template
+                    name="email"
                     required
-                    placeholder="john@example.com"
-                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-accent focus:ring-4 focus:ring-accent/10 transition-all outline-none"
+                    placeholder="john@company.com"
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
                   />
                 </div>
-              </motion.div>
-            </div>
-
-            {/* Message Input */}
-            <motion.div variants={itemVariants}>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Message
-              </label>
-              <div className="relative">
-                <span className="absolute left-4 top-4 text-slate-400">
-                  <MessageSquare className="w-5 h-5" />
-                </span>
-                <textarea
-                  name="message"
-                  rows="4"
-                  required
-                  placeholder="Tell us about your project..."
-                  className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-accent focus:ring-4 focus:ring-accent/10 transition-all outline-none resize-none"
-                ></textarea>
               </div>
-            </motion.div>
 
-            {/* Submit Button */}
-            <motion.div variants={itemVariants}>
+              {/* Message Field */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
+                <div className="relative">
+                  <MessageSquare className="absolute left-4 top-4 w-5 h-5 text-slate-400" />
+                  <textarea
+                    name="message"
+                    required
+                    rows="4"
+                    placeholder="Tell us about your project requirements..."
+                    className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none resize-none"
+                  ></textarea>
+                </div>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-accent text-white font-bold rounded-xl shadow-lg shadow-accent/25 hover:shadow-accent/40 active:scale-[0.98] transition-all flex justify-center items-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:shadow-xl active:scale-[0.98] transition-all flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="animate-spin text-xl" /> Sending...
+                    <Loader2 className="animate-spin w-5 h-5" /> Sending...
                   </>
                 ) : (
                   <>
@@ -188,29 +171,41 @@ export default function Contact() {
                   </>
                 )}
               </button>
-            </motion.div>
-          </form>
+            </form>
 
-          {/* Success Message Banner */}
-          <AnimatePresence>
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                animate={{ opacity: 1, height: "auto", marginTop: 20 }}
-                exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                className="bg-green-50 border border-green-100 text-green-700 px-6 py-4 rounded-xl flex items-center gap-3"
-              >
-                <CheckCircle className="text-xl flex-shrink-0" />
-                <div>
-                  <p className="font-semibold">Message sent successfully!</p>
-                  <p className="text-sm text-green-600">
-                    We'll get back to you shortly.
+            {/* Success Overlay */}
+            <AnimatePresence>
+              {success && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center text-center p-8 z-10"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                    className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4"
+                  >
+                    <CheckCircle2 className="w-10 h-10 text-green-600" />
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-slate-900">Message Sent!</h3>
+                  <p className="text-slate-600 mt-2 max-w-xs">
+                    Thanks for reaching out. We'll review your inquiry and get back to you within 24 hours.
                   </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                  <button 
+                    onClick={() => setSuccess(false)}
+                    className="mt-6 text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+                  >
+                    Send another message
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );

@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between">
           <div>
-            <h3 className="text-xl font-bold">Skyland Software Agency</h3>
+            <h3 className="text-xl font-bold">Skyland Leads</h3>
             <p className="text-slate-400 mt-2">
               Building scalable digital products with clean engineering.
             </p>
